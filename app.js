@@ -1,10 +1,13 @@
+require('dotenv').config();
 var fs = require("fs");
-var data = require('./params.json')
+var data = require('./params.json');
 const { stringify } = require('querystring');
 const { writeFile } = require('fs');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 let commandPrefix = data.commandPrefix
+const token = process.env.TOKEN;
+console.log(token)
 
 client.on('ready', ()=> {
     console.log("Server Connection established, loged in as " + client.user.tag)
@@ -90,4 +93,4 @@ function saveData(data)
     })
 }
 
-client.login(data.token);
+client.login(token);

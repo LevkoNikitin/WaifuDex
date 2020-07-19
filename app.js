@@ -45,7 +45,6 @@ client.on('message', (receivedMessage) => {
 })
 
 
-
 function parseCommand(receivedMessage){
  let fullCommand = receivedMessage.content.substr(commandPrefix.length)
  let splitCommand = fullCommand.split(" ")
@@ -88,7 +87,7 @@ function setPrefix(arguments, receivedMessage){
         console.log(arguments)
         data.commandPrefix = arguments.toString()
         console.log(data.commandPrefix)
-        saveData(data)
+        saveFile(params, 'params')
         commandPrefix = data.commandPrefix
         receivedMessage.channel.send("Command prefix changed to: "+ data.commandPrefix)
     }
@@ -110,14 +109,25 @@ function timeoutuser(receivedMessage, arguments)
         }
     )
     
-    saveData(data)
+    saveFile(params, 'params')
 }
 
-function saveData(data)
-{
-    writeFile('params.json', JSON.stringify(data), (err) => { 
+function saveFile(file, argument)
+{   
+    if(argument === 'params'){
+    writeFile('params.json', JSON.stringify(file), (err) => { 
         if (err) throw err; 
-    })
+    })}
+
+    if(argument === 'users'){
+        writeFile('users.json', JSON.stringify(file), (err) => { 
+            if (err) throw err; 
+    })}
+
+    if(argument === 'waifus'){
+        writeFile('waifus.json', JSON.stringify(file), (err) => { 
+            if (err) throw err; 
+    })}
 }
 
 client.login(token);

@@ -17,7 +17,7 @@ const waifus = require('./waifus.json');
 const { Console } = require("console");
 
 //
-let commandPrefix = data.commandPrefix
+let commandPrefix = params.commandPrefix
 const token = process.env.TOKEN;
 
 client.on('ready', ()=> {
@@ -28,9 +28,9 @@ client.on('ready', ()=> {
     client.guilds.cache.forEach((guild) => {
         console.log(guild.name);
 
-        guild.channels.cache.forEach((channel)=>{
-            console.log(` - ${channel.name} ${channel.type} ${channel.id}`);
-        }) 
+        //guild.channels.cache.forEach((channel)=>{
+        //    console.log(` - ${channel.name} ${channel.type} ${channel.id}`);
+        //}) 
     })
     
 })
@@ -46,13 +46,16 @@ client.on('message', (receivedMessage) => {
         receivedMessage.channel.send("Good bye")
         process.kill(0)
     }
-    for(let i = 0; i < data.timedOutUsers.length; i++){
-        if(data.timedOutUsers[i].id === receivedMessage.author.id.toString()){
-            receivedMessage.delete()
-                .then(msg => console.log(`Deleted message from ${msg.author.username}`))
-                .catch(console.error);
-        } 
-     }
+    if(params.timedOutUsers.length > 0)
+    {
+        for(let i = 0; i < params.timedOutUsers.length; i++){
+            if(params.timedOutUsers[i].id === receivedMessage.author.id.toString()){
+                receivedMessage.delete()
+                    .then(msg => console.log(`Deleted message from ${msg.author.username}`))
+                    .catch(console.error);
+            } 
+        }
+    }
 })
 
 
@@ -79,9 +82,37 @@ function parseCommand(receivedMessage){
         receivedMessage.channel.send("User: " + arguments + " has been timedout for 10 years")
     }
 
-    switch(primarycommand)
+    switch(primarycommand){
+        case "help" : helpDesk(arguments, receivedMessage)
+            break;
+        case "setprefix" : setPrefix(arguments, receivedMessage)
+            break;
+        case "timeout" : {
+            timeoutuser(receivedMessage, arguments)
+            receivedMessage.channel.send("User: " + arguments + " has been timedout for 10 years")
+            break;
+        }
+        case "registerweeb" || "rw":{
+            let value = waifu.registerWeeb(receivedMessage.author.id)
+            switch(value){
+                case true: receivedMessage.channel.send("This weeb already exists in the registry")
+                    break;
+                case false: receivedMessage.channel.send(" Weeb("+receivedMessage.author.id+") has been added to the registry of sexual predators")
+                    break;
+            }
+            break;
+    }
+        case "profile": waifu.userProfile(receivedMessage)
+            break;
+
+
+        
+        default: commandError(receivedMessage)
+    }
 
 }
+
+
 
 function helpDesk(arguments, receivedMessage){
     const embed = new Discord.MessageEmbed()
@@ -92,6 +123,10 @@ function helpDesk(arguments, receivedMessage){
     receivedMessage.channel.send(embed)
 }
 
+function commandError(receivedMessage){
+    receivedMessage.channel.send("The command you tried to use does not exist check the help desk by using " +
+    "\""+ commandPrefix+"help\" to see a  list of all available commands")
+}
 
 function setPrefix(arguments, receivedMessage){
     if(arguments.length === 0){
@@ -99,11 +134,11 @@ function setPrefix(arguments, receivedMessage){
     }
     else{
         console.log(arguments)
-        data.commandPrefix = arguments.toString()
-        console.log(data.commandPrefix)
+        params.commandPrefix = arguments.toString()
+        console.log(params.commandPrefix)
         saveFile(params, 'params')
-        commandPrefix = data.commandPrefix
-        receivedMessage.channel.send("Command prefix changed to: "+ data.commandPrefix)
+        commandPrefix = params.commandPrefix
+        receivedMessage.channel.send("Command prefix changed to: "+ params.commandPrefix)
     }
 }
 
@@ -116,7 +151,7 @@ function timeoutuser(receivedMessage, arguments)
     {
         console.log("!!!!!!")
     }
-    data.timedOutUsers.push(
+    params.timedOutUsers.push(
         {
             "time" : 10,
             "id" : timeout

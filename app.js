@@ -1,13 +1,24 @@
 require('dotenv').config();
+
 var fs = require("fs");
-var data = require('./params.json');
 const { stringify } = require('querystring');
 const { writeFile } = require('fs');
+
+//Bot variables
 const Discord = require('discord.js');
 const client = new Discord.Client();
+const waifu = require('./waifuCommands');
+
+//json files
+const params = require('./params.json');
+const users = require('./users.json');
+const waifus = require('./waifus.json');
+
+const { Console } = require("console");
+
+//
 let commandPrefix = data.commandPrefix
 const token = process.env.TOKEN;
-console.log(token)
 
 client.on('ready', ()=> {
     console.log("Server Connection established, loged in as " + client.user.tag)
@@ -67,6 +78,9 @@ function parseCommand(receivedMessage){
         timeoutuser(receivedMessage, arguments)
         receivedMessage.channel.send("User: " + arguments + " has been timedout for 10 years")
     }
+
+    switch(primarycommand)
+
 }
 
 function helpDesk(arguments, receivedMessage){

@@ -1,6 +1,7 @@
 var fs = require("fs");
 const { stringify } = require('querystring');
 const { writeFile } = require('fs');
+const { Console } = require("console");
 
 //Bot variables
 const Discord = require('discord.js');
@@ -10,7 +11,7 @@ const waifu = require('./waifuCommands')
 //json files
 const params = require('./params.json');
 const users = require('./users.json');
-const { Console } = require("console");
+
 
 function registerWeeb(userId)
 { 
@@ -43,9 +44,9 @@ function registerWeeb(userId)
     return userExists;
 }
 
+
 function userProfile(receivedMessage){
     const prfileEmbed = new Discord.MessageEmbed()
-
 
 }
 
@@ -67,5 +68,6 @@ function saveFile(file, argument)
             if (err) throw err; 
     })}
 }
+
 
 exports.registerWeeb = registerWeeb;

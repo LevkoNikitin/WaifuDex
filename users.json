@@ -1,1 +1,20 @@
-[{"id":"233635654230081537","favWaifu":"","waifuImg":"./waifus/noWaifuSet.jpg","waifuImgAbrv":"noWaifuSet.jpg","weebCoins":0,"weebPoints":0,"ownedWaifus":[]},{"id":"343550770337153034","favWaifu":"","waifuImg":"waifus/noWaifuSet.jpg","weebCoins":0,"weebPoints":0,"ownedWaifus":[]}]
+[
+    {
+        "id": "233635654230081537",
+        "favWaifu": "",
+        "waifuImg": "./waifus/noWaifuSet.jpg",
+        "waifuImgAbrv": "noWaifuSet.jpg",
+        "weebCoins": 0,
+        "weebPoints": 0,
+        "ownedWaifus": []
+    },
+    {
+        "id": "343550770337153034",
+        "favWaifu": "",
+        "waifuImg": "./waifus/noWaifuSet.jpg",
+        "waifuImgAbrv": "noWaifuSet.jpg",
+        "weebCoins": 0,
+        "weebPoints": 0,
+        "ownedWaifus": []
+    }
+]

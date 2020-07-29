@@ -12,20 +12,12 @@ const waifu = require('./waifuCommands')
 let params = require('./params.json');
 let users = require('./users.json');
 
-
+//Adds a user to the user json file that allows the user to use all the data tracked commands
 function registerWeeb(userId)
 { 
     users = require('./users.json');
-    let userExists = false;
-    for(let i = 0; i < users.length; i++)
-    {
-        if(users[i].id === userId)
-        {
-            userExists = true;
-        }
-    }
-
-    if(userExists){
+    let userIndex = findUser(receivedMessage.author.id)
+    if(userIndex >= 0){
         console.log("User already exists in the registry")
     }   
     else{
@@ -33,7 +25,8 @@ function registerWeeb(userId)
             {
                 "id": userId.toString(),
                 "favWaifu":"", 
-                "waifuImg":"waifus/noWaifuSet.jpg",
+                "waifuImg":"./waifus/noWaifuSet.jpg",
+                "waifuImgAbrv": "noWaifuSet.jpg",
                 "weebCoins":0,
                 "weebPoints":0,
                 "ownedWaifus":[]
@@ -44,6 +37,7 @@ function registerWeeb(userId)
     return userExists;
 }
 
+//takes the user ID and checks the user json if the object with the id exists, if not it returns -1
 function findUser(userId){
     users = require('./users.json');
     

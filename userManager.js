@@ -6,19 +6,36 @@ const { Console } = require("console");
 //Bot variables
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const waifu = require('./waifuCommands')
+const waifu = require('./userManager')
 
 //json files
-let params = require('./params.json');
-let users = require('./users.json');
+let params = require('./data/params.json');
+let users = require('./data/users.json');
+
+
+//takes the user ID and checks the user json if the object with the id exists, if not, returns -1
+function findUser(userId){
+    users = require('./data/users.json');
+    
+    let userIndex = -1;
+    for(let i = 0; i < users.length; i++)
+    {
+        if(users[i].id === userId)
+        {
+            userIndex = i;
+        }
+    }
+    return userIndex;
+}
 
 //Adds a user to the user json file that allows the user to use all the data tracked commands
-function registerWeeb(userId)
+function registerWeeb(receivedMessage)
 { 
-    users = require('./users.json');
+    users = require('./data/users.json');
     let userIndex = findUser(receivedMessage.author.id)
     if(userIndex >= 0){
         console.log("User already exists in the registry")
+        receivedMessage.channel.send(" This user has already been registered")
     }   
     else{
         users.push(
@@ -33,23 +50,8 @@ function registerWeeb(userId)
             }
         )
         saveFile(users, 'users')
+        receivedMessage.channel.send("User has been added to the watch list")
     }
-    return userExists;
-}
-
-//takes the user ID and checks the user json if the object with the id exists, if not it returns -1
-function findUser(userId){
-    users = require('./users.json');
-    
-    let userIndex = -1;
-    for(let i = 0; i < users.length; i++)
-    {
-        if(users[i].id === userId)
-        {
-            userIndex = i;
-        }
-    }
-    return userIndex;
 }
 
 function userProfile(receivedMessage){
@@ -76,25 +78,47 @@ function userProfile(receivedMessage){
 }
 
 
+function listWaifus(receivedMessage)
+{
+    users = require('./data/users.json');
+    userIndex = findUser(receivedMessage.author.id)
+    let waifu
+    const userWaifuList = new Discord.MessageEmbed()
+        .setColor("#FFC700")
+        .setTitle("This is a list of the waifus you own")
+    
+    if(users[userIndex].ownedWaifus.length > 0){
+        for(i = 0; i < users[userIndex].ownedWaifus.length; ){
+            waifu.concat(i,": ", users[userIndex].ownedWaifus[i],"\n");
+        }
+        userWaifuList.addField("Waifus:", waifu, true)
+    }else{
+        userWaifuList.addField("Waifus:", "You currently have not caught any waifus", true)
+    }
+
+    receivedMessage.channel.send(userWaifuList)
+}
+
+
 function saveFile(file, argument)
 {   
     if(argument === 'params'){
-    writeFile('params.json', JSON.stringify(file), (err) => { 
+    writeFile('data/params.json', JSON.stringify(file), (err) => { 
         if (err) throw err; 
     })}
 
     if(argument === 'users'){
-        writeFile('users.json', JSON.stringify(file), (err) => { 
+        writeFile('data/users.json', JSON.stringify(file), (err) => { 
             if (err) throw err; 
     })}
 
     if(argument === 'waifus'){
-        writeFile('waifus.json', JSON.stringify(file), (err) => { 
+        writeFile('data/waifus.json', JSON.stringify(file), (err) => { 
             if (err) throw err; 
     })}
 }
 
-
-exports.registerWeeb = registerWeeb;
 exports.findUser = findUser;
+exports.registerWeeb = registerWeeb;
 exports.userProfile = userProfile;
+exports.listWaifus = listWaifus;

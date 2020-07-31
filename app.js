@@ -7,12 +7,12 @@ const { writeFile } = require('fs');
 //Bot variables
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const waifu = require('./waifuCommands');
+const waifu = require('./userManager');
 
 //json files
-const params = require('./params.json');
-const users = require('./users.json');
-const waifus = require('./waifus.json');
+const params = require('./data/params.json');
+const users = require('./data/users.json');
+const waifus = require('./data/waifus.json');
 
 const { Console } = require("console");
 
@@ -59,54 +59,31 @@ client.on('message', (receivedMessage) => {
 })
 
 
-function parseCommand(receivedMessage){
+function parseCommand(receivedMessage)
+{
  let fullCommand = receivedMessage.content.substr(commandPrefix.length)
  let splitCommand = fullCommand.split(" ")
  let primarycommand = splitCommand[0]
  let arguments = splitCommand.slice(1)
     
-    if(primarycommand === "help"){
-        helpDesk(arguments, receivedMessage)
-    }
-    
-    if(primarycommand === "setprefix"){
-        setPrefix(arguments, receivedMessage)
-    }
-
-    if(primarycommand === "user"){
-        console.log(receivedMessage.author)
-    }
-
-    if(primarycommand === "timeout"){
-        timeoutuser(receivedMessage, arguments)
-        receivedMessage.channel.send("User: " + arguments + " has been timedout for 10 years")
-    }
-
-    switch(primarycommand){
+    switch(primarycommand)
+    {
         case "help" : helpDesk(arguments, receivedMessage)
             break;
         case "setprefix" : setPrefix(arguments, receivedMessage)
             break;
-        case "timeout" : {
+        //case "timeout" :
+        {
             timeoutuser(receivedMessage, arguments)
             receivedMessage.channel.send("User: " + arguments + " has been timedout for 10 years")
             break;
         }
-        case "registerweeb" || "rw":{
-            let value = waifu.registerWeeb(receivedMessage.author.id)
-            switch(value){
-                case true: receivedMessage.channel.send("This weeb already exists in the registry")
-                    break;
-                case false: receivedMessage.channel.send(" Weeb("+receivedMessage.author.id+") has been added to the registry of sexual predators")
-                    break;
-            }
+        case "registerweeb" || "rw": waifu.registerWeeb(receivedMessage)
             break;
-    }
         case "profile": waifu.userProfile(receivedMessage)
             break;
-
-
-        
+        case "list" : waifu.listWaifus(receivedMessage);
+            break;
         default: commandError(receivedMessage)
     }
 
@@ -164,17 +141,17 @@ function timeoutuser(receivedMessage, arguments)
 function saveFile(file, argument)
 {   
     if(argument === 'params'){
-    writeFile('params.json', JSON.stringify(file), (err) => { 
+    writeFile('data/params.json', JSON.stringify(file), (err) => { 
         if (err) throw err; 
     })}
 
     if(argument === 'users'){
-        writeFile('users.json', JSON.stringify(file), (err) => { 
+        writeFile('data/users.json', JSON.stringify(file), (err) => { 
             if (err) throw err; 
     })}
 
     if(argument === 'waifus'){
-        writeFile('waifus.json', JSON.stringify(file), (err) => { 
+        writeFile('data/waifus.json', JSON.stringify(file), (err) => { 
             if (err) throw err; 
     })}
 }
